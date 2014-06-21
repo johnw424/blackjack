@@ -9,13 +9,13 @@ class window.App extends Backbone.Model
     player = @get 'playerHand'
     dealer = @get 'dealerHand'
     
-    player.on 'bust',  -> @trigger 'win:dealer'
+    player.on 'bust',  -> alert 'Dealer Wins'
     player.on 'stand', -> dealer.playDealer()
-    dealer.on 'bust',  -> @trigger 'win:player'
+    dealer.on 'bust',  -> alert 'Player Wins'
     dealer.on 'stand', ->
       @trigger if player.scores() > dealer.scores()
-        'win:player'
+        alert 'Player Wins'
       else if player.scores() < dealer.scores()
-        'win:dealer'
+        alert 'Dealer Wins'
       else
-        'push'
+        alert 'Push'
