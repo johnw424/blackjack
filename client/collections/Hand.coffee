@@ -6,6 +6,25 @@ class window.Hand extends Backbone.Collection
 
   hit: ->
     @add(@deck.pop()).last()
+    # Check if bust
+    if @scores().length < 1
+      if @scores()[0] > 21 and @scores()[1] > 21
+        @trigger 'bust'
+    else if @scores() > 21
+      @trigger 'bust'
+
+  stand: ->
+    @trigger 'stand'
+
+  playDealer: ->
+    # Flip over first card
+    @models[0].flip();
+    # Keep hitting if score is under than 17
+    while @scores() < 17
+      @hit()
+    # Dealer is done playing & didn't bust
+    if @scores() <= 21
+      @stand()
 
   scores: ->
     # The scores are an array of potential scores.
@@ -17,4 +36,9 @@ class window.Hand extends Backbone.Collection
     score = @reduce (score, card) ->
       score + if card.get 'revealed' then card.get 'value' else 0
     , 0
-    if hasAce then [score, score + 10] else [score]
+    # Pick smallest score, if both are over 21
+    if hasAce
+      if score > 11
+        [score]
+      else [score + 10]
+    else [score]
